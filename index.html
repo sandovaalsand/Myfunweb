@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wee — Creative Designer</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #f7f8fa;
+      --surface:  #ffffff;
+      --border:   #e2e6ea;
+      --accent:   #4f7df3;
+      --accent2:  #f3954f;
+      --text:     #1a1d23;
+      --muted:    #6b7280;
+      --found:    #22c55e;
+      --selected: #bfdbfe;
+      --radius:   12px;
+      --shadow:   0 2px 16px rgba(0,0,0,.08);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: .75rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--accent); letter-spacing: -.3px; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: .9rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      max-width: 900px; margin: 0 auto;
+      padding: 4rem 1.5rem 2rem;
+      display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;
+    }
+    .hero-img-wrap {
+      flex-shrink: 0;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid var(--accent);
+      box-shadow: 0 0 0 8px rgba(79,125,243,.12);
+    }
+    .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-text { flex: 1; min-width: 220px; }
+    .hero-greeting { font-size: .9rem; color: var(--accent); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .4rem; }
+    .hero-name { font-size: 2.6rem; font-weight: 800; line-height: 1.1; margin-bottom: .6rem; }
+    .hero-name span { color: var(--accent); }
+    .hero-role {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-size: .85rem; font-weight: 600;
+      padding: .3rem .9rem; border-radius: 50px; margin-bottom: 1rem;
+    }
+    .hero-bio { color: var(--muted); font-size: 1rem; max-width: 480px; }
+    .hero-cta { margin-top: 1.4rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; padding: .55rem 1.4rem; border-radius: 8px;
+      font-weight: 600; font-size: .9rem; text-decoration: none; cursor: pointer;
+      transition: transform .15s, box-shadow .15s; border: none;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79,125,243,.25); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+
+    /* SECTION */
+    section { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+    .section-title {
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 2px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* SKILLS */
+    .skills { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .skill-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 50px; padding: .35rem .9rem;
+      font-size: .85rem; color: var(--text); font-weight: 500;
+      transition: border-color .2s, color .2s;
+    }
+    .skill-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* CARDS */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.4rem;
+      box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card-icon { font-size: 1.8rem; margin-bottom: .6rem; }
+    .card h3 { font-size: 1rem; margin-bottom: .4rem; }
+    .card p { font-size: .85rem; color: var(--muted); }
+
+    /* GAME */
+    #game { background: var(--surface); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); }
+    .game-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; margin-bottom: 1.4rem; }
+    .game-header h2 { font-size: 1.3rem; }
+    #game-status {
+      font-size: .85rem; color: var(--muted);
+      background: var(--bg); padding: .35rem .9rem; border-radius: 50px; border: 1px solid var(--border);
+    }
+    #new-game-btn {
+      background: var(--accent); color: #fff; border: none;
+      padding: .45rem 1.1rem; border-radius: 8px; font-size: .85rem;
+      font-weight: 600; cursor: pointer; transition: opacity .15s;
+    }
+    #new-game-btn:hover { opacity: .85; }
+    #word-list { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.4rem; }
+    .word-tag {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 6px; padding: .3rem .75rem;
+      font-size: .82rem; font-weight: 600; letter-spacing: .04em; color: var(--text);
+      transition: all .25s; user-select: none;
+    }
+    .word-tag.found { background: #dcfce7; border-color: var(--found); color: #166534; text-decoration: line-through; }
+    #grid-wrap { overflow-x: auto; }
+    #grid {
+      display: inline-grid;
+      gap: 3px;
+      touch-action: none;
+      user-select: none;
+    }
+    .cell {
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; font-weight: 700;
+      border-radius: 6px; cursor: pointer;
+      background: var(--bg); transition: background .1s;
+    }
+    .cell.selected { background: var(--selected); }
+    .cell.found { background: #bbf7d0; color: #166534; }
+    #win-banner {
+      display: none; margin-top: 1.2rem;
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      border: 2px solid var(--found); border-radius: var(--radius);
+      padding: 1rem 1.5rem; text-align: center;
+      font-weight: 700; font-size: 1rem; color: #166534;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 2rem 1rem;
+      font-size: .82rem; color: var(--muted);
+      border-top: 1px solid var(--border); margin-top: 1rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .hero { flex-direction: column; align-items: flex-start; gap: 1.5rem; padding-top: 2.5rem; }
+      .hero-img-wrap { width: 130px; height: 130px; }
+      .hero-name { font-size: 2rem; }
+      .cell { width: 28px; height: 28px; font-size: .78rem; }
+      #game { padding: 1.2rem; }
+      .nav-links { gap: .9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">Wee.</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#game-section">Game</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="hero" id="about">
+  <div class="hero-img-wrap">
+    <img src="money-heist-professor.jpg" alt="Wee profile photo" />
+  </div>
+  <div class="hero-text">
+    <p class="hero-greeting">👋 Hello, I'm</p>
+    <h1 class="hero-name">Wee <span>.</span></h1>
+    <span class="hero-role">Creative Designer</span>
+    <p class="hero-bio">
+      I craft beautiful digital experiences that blend aesthetics with function.
+      From brand identities to interactive interfaces, I turn ideas into visuals
+      that resonate and inspire — one pixel at a time.
+    </p>
+    <div class="hero-cta">
+      <a href="#work" class="btn btn-primary">View My Work</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+</div>
+
+<section>
+  <h2 class="section-title">Skills &amp; Tools</h2>
+  <div class="skills">
+    <span class="skill-pill">UI / UX Design</span>
+    <span class="skill-pill">Brand Identity</span>
+    <span class="skill-pill">Figma</span>
+    <span class="skill-pill">Adobe Illustrator</span>
+    <span class="skill-pill">Photoshop</span>
+    <span class="skill-pill">Motion Design</span>
+    <span class="skill-pill">Prototyping</span>
+    <span class="skill-pill">Typography</span>
+    <span class="skill-pill">Color Theory</span>
+    <span class="skill-pill">HTML / CSS</span>
+    <span class="skill-pill">Design Systems</span>
+  </div>
+</section>
+
+<section id="work">
+  <h2 class="section-title">Selected Work</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🎨</div>
+      <h3>Brand Identity System</h3>
+      <p>Full rebrand for a fintech startup — logo, palette, typography &amp; usage guidelines.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>Mobile App UI</h3>
+      <p>End-to-end UI design for a fitness tracking app with 50k+ downloads.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>Landing Page Design</h3>
+      <p>High-converting SaaS landing page with animated illustrations and micro-interactions.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✍️</div>
+      <h3>Editorial Design</h3>
+      <p>Layout and visual design for a quarterly design magazine, print &amp; digital editions.</p>
+    </div>
+  </div>
+</section>
+
+<section id="game-section">
+  <h2 class="section-title">🎮 Word Search — Designer Edition</h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.4rem;">
+    Find all the hidden design &amp; creativity words. Click the first letter then the last — or just drag across them. Works on mobile too!
+  </p>
+  <div id="game">
+    <div class="game-header">
+      <div>
+        <h2>Find the Words</h2>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:.2rem;">Click start → click end &nbsp;|&nbsp; or drag across letters</p>
+      </div>
+      <span id="game-status">0 / 10 found</span>
+      <button id="new-game-btn">New Game</button>
+    </div>
+    <div id="word-list"></div>
+    <div id="grid-wrap"><div id="grid"></div></div>
+    <div id="win-banner">🎉 Congratulations! You found all the words!</div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2 class="section-title">Get in Touch</h2>
+  <div class="card" style="max-width:480px;">
+    <p style="margin-bottom:1rem;color:var(--muted);">Have a project in mind? I'd love to hear about it.</p>
+    <a href="mailto:sandovaal@hotmail.com" class="btn btn-primary" style="display:inline-block;">✉️ Send me an email</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Wee — Creative Designer &nbsp;·&nbsp; Built with ❤️ &nbsp;·&nbsp; <a href="#about">Back to top ↑</a></p>
+</footer>
+
+<script>
+(function () {
+  var WORDS = ['DESIGN','COLOR','BRAND','PIXEL','FONT','LAYOUT','SHAPE','SKETCH','FIGMA','GRID'];
+  var SIZE = 12;
+  var DIRS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+  var ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  var grid = [], placed = {}, found = new Set();
+  var selecting = false, startCell = null, currentEnd = null;
+
+  var gridEl    = document.getElementById('grid');
+  var wordListEl = document.getElementById('word-list');
+  var statusEl  = document.getElementById('game-status');
+  var winBanner = document.getElementById('win-banner');
+  var newBtn    = document.getElementById('new-game-btn');
+
+  function makeGrid() {
+    return Array.from({length:SIZE}, function(){ return Array(SIZE).fill(''); });
+  }
+
+  function placeWord(g, word) {
+    for (var a = 0; a < 300; a++) {
+      var di = Math.floor(Math.random()*DIRS.length);
+      var dr = DIRS[di][0], dc = DIRS[di][1];
+      var r0 = Math.floor(Math.random()*SIZE);
+      var c0 = Math.floor(Math.random()*SIZE);
+      var rE = r0 + dr*(word.length-1);
+      var cE = c0 + dc*(word.length-1);
+      if (rE<0||rE>=SIZE||cE<0||cE>=SIZE) continue;
+      var ok = true;
+      for (var i=0;i<word.length;i++) {
+        var ch = g[r0+dr*i][c0+dc*i];
+        if (ch!==''&&ch!==word[i]){ok=false;break;}
+      }
+      if (!ok) continue;
+      var cells = [];
+      for (var j=0;j<word.length;j++) {
+        var r=r0+dr*j, c=c0+dc*j;
+        g[r][c]=word[j];
+        cells.push(r+','+c);
+      }
+      return cells;
+    }
+    return null;
+  }
+
+  function fillRandom(g) {
+    for (var r=0;r<SIZE;r++)
+      for (var c=0;c<SIZE;c++)
+        if (g[r][c]==='') g[r][c]=ALPHA[Math.floor(Math.random()*26)];
+  }
+
+  function generate() {
+    grid = makeGrid();
+    placed = {};
+    for (var i=0;i<WORDS.length;i++) {
+      var cells = placeWord(grid, WORDS[i]);
+      if (cells) placed[WORDS[i]] = cells;
+    }
+    fillRandom(grid);
+  }
+
+  function render() {
+    gridEl.style.gridTemplateColumns = 'repeat('+SIZE+', auto)';
+    gridEl.innerHTML = '';
+    for (var r=0;r<SIZE;r++) {
+      for (var c=0;c<SIZE;c++) {
+        var div = document.createElement('div');
+        div.className = 'cell';
+        div.textContent = grid[r][c];
+        div.dataset.r = r;
+        div.dataset.c = c;
+        gridEl.appendChild(div);
+      }
+    }
+  }
+
+  function renderWords() {
+    wordListEl.innerHTML = '';
+    for (var i=0;i<WORDS.length;i++) {
+      var w = WORDS[i];
+      var span = document.createElement('span');
+      span.className = 'word-tag' + (found.has(w) ? ' found' : '');
+      span.textContent = w;
+      span.id = 'tag-'+w;
+      wordListEl.appendChild(span);
+    }
+    statusEl.textContent = found.size+' / '+WORDS.length+' found';
+  }
+
+  function cellAt(r,c) {
+    return gridEl.querySelector('[data-r="'+r+'"][data-c="'+c+'"]');
+  }
+
+  function getCellsBetween(r1,c1,r2,c2) {
+    var dr=r2-r1, dc=c2-c1;
+    var len=Math.max(Math.abs(dr),Math.abs(dc));
+    if (len===0) return [{r:r1,c:c1}];
+    if (Math.abs(dr)!==0&&Math.abs(dc)!==0&&Math.abs(dr)!==Math.abs(dc)) return [];
+    var sr=dr===0?0:dr/Math.abs(dr);
+    var sc=dc===0?0:dc/Math.abs(dc);
+    var cells=[];
+    for (var i=0;i<=len;i++) cells.push({r:r1+sr*i,c:c1+sc*i});
+    return cells;
+  }
+
+  function clearSelection() {
+    var sel = gridEl.querySelectorAll('.cell.selected');
+    for (var i=0;i<sel.length;i++) sel[i].classList.remove('selected');
+  }
+
+  function highlightPreview(endR,endC) {
+    clearSelection();
+    if (!startCell) return;
+    var r1=+startCell.dataset.r, c1=+startCell.dataset.c;
+    var between=getCellsBetween(r1,c1,endR,endC);
+    for (var i=0;i<between.length;i++) {
+      var el=cellAt(between[i].r,between[i].c);
+      if (el&&!el.classList.contains('found')) el.classList.add('selected');
+    }
+  }
+
+  function checkSelection(r1,c1,r2,c2) {
+    var between=getCellsBetween(r1,c1,r2,c2);
+    if (between.length<2) return;
+    var key=between.map(function(p){return p.r+','+p.c;}).join(',');
+    var keyRev=between.slice().reverse().map(function(p){return p.r+','+p.c;}).join(',');
+    var words=Object.keys(placed);
+    for (var i=0;i<words.length;i++) {
+      var word=words[i];
+      if (found.has(word)) continue;
+      var wKey=placed[word].join(',');
+      if (wKey===key||wKey===keyRev) { markFound(word,placed[word]); return; }
+    }
+  }
+
+  function markFound(word,cells) {
+    found.add(word);
+    for (var i=0;i<cells.length;i++) {
+      var parts=cells[i].split(',');
+      var el=cellAt(+parts[0],+parts[1]);
+      if (el){el.classList.remove('selected');el.classList.add('found');}
+    }
+    var tag=document.getElementById('tag-'+word);
+    if (tag) tag.classList.add('found');
+    statusEl.textContent=found.size+' / '+WORDS.length+' found';
+    if (found.size===Object.keys(placed).length) {
+      winBanner.style.display='block';
+      winBanner.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+  }
+
+  function getCell(e) {
+    var touch = e.touches ? e.touches[0] : e;
+    var el = document.elementFromPoint(touch.clientX,touch.clientY);
+    return (el&&el.classList.contains('cell')) ? el : null;
+  }
+
+  function onPointerDown(e) {
+    var cell=getCell(e);
+    if (!cell) return;
+    e.preventDefault();
+    selecting=true; startCell=cell; currentEnd=cell;
+    clearSelection();
+    cell.classList.add('selected');
+  }
+
+  function onPointerMove(e) {
+    if (!selecting||!startCell) return;
+    e.preventDefault();
+    var cell=getCell(e);
+    if (!cell||cell===currentEnd) return;
+    currentEnd=cell;
+    highlightPreview(+cell.dataset.r,+cell.dataset.c);
+  }
+
+  function onPointerUp(e) {
+    if (!selecting||!startCell) return;
+    e.preventDefault();
+    selecting=false;
+    var end=currentEnd||startCell;
+    checkSelection(+startCell.dataset.r,+startCell.dataset.c,+end.dataset.r,+end.dataset.c);
+    clearSelection();
+    startCell=null; currentEnd=null;
+  }
+
+  function attachEvents() {
+    gridEl.addEventListener('mousedown',  onPointerDown);
+    gridEl.addEventListener('mousemove',  onPointerMove);
+    document.addEventListener('mouseup',  onPointerUp);
+    gridEl.addEventListener('touchstart', onPointerDown, {passive:false});
+    gridEl.addEventListener('touchmove',  onPointerMove, {passive:false});
+    gridEl.addEventListener('touchend',   onPointerUp,   {passive:false});
+  }
+
+  function newGame() {
+    found=new Set();
+    winBanner.style.display='none';
+    generate();
+    render();
+    renderWords();
+    attachEvents();
+  }
+
+  newBtn.addEventListener('click', newGame);
+  newGame();
+})();
+</script>
+</body>
+</html>
